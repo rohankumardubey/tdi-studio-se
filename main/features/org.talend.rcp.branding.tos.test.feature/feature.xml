@@ -16,6 +16,7 @@
     <import plugin="org.talend.repository" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.talend.utils" version="0.0.0" match="greaterOrEqual"/>
   </requires>  
+  <plugin id="org.talend.common.ui.runtime.test" download-size="0" install-size="0" version="0.0.0" fragment="true" unpack="false"/>
   <plugin id="org.talend.commons.runtime.test" download-size="0" install-size="0" version="0.0.0" fragment="true" unpack="false"/>
   <plugin id="org.talend.commons.ui.test" download-size="0" install-size="0" version="0.0.0" fragment="true" unpack="false"/>
   <plugin id="org.talend.core.repository.test" download-size="0" install-size="0" version="0.0.0" fragment="true" unpack="false"/>
