@@ -75,10 +75,11 @@ public class ConvertRepositoryNodeToProcessNode {
         String dbVersion = iMetadataConnection.getDbVersionString();
         String url = iMetadataConnection.getUrl();
         String additionalParams = iMetadataConnection.getAdditionalParams();
+        boolean supportNLS = iMetadataConnection.isSupportNLS();
 
         if (EDatabaseTypeName.GENERAL_JDBC.getProduct().equals(dbType)) { // hywang for 9594
             info = new DbInfo(dbType, username, pwd, dbVersion, url, iMetadataConnection.getDriverClass(),
-                    iMetadataConnection.getDriverJarPath(), additionalParams);
+                    iMetadataConnection.getDriverJarPath(), additionalParams, supportNLS);
         } else if (EDatabaseTypeName.HIVE.getDisplayName().equals(iMetadataConnection.getDbType())) {
             String jobTracker = TalendTextUtils.removeQuotes(String.valueOf(iMetadataConnection
                     .getParameter(ConnParameterKeys.CONN_PARA_KEY_JOB_TRACKER_URL)));
@@ -90,7 +91,7 @@ public class ConvertRepositoryNodeToProcessNode {
             }
             info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
                     iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(), iMetadataConnection.getUrl(),
-                    jobTracker, nameNode, thrifturi, iMetadataConnection.getDriverJarPath());
+                    jobTracker, nameNode, thrifturi, iMetadataConnection.getDriverJarPath(), supportNLS);
             String hiveServerVersion = String.valueOf(iMetadataConnection.getParameter(ConnParameterKeys.HIVE_SERVER_VERSION));
             String driverClass = ""; //$NON-NLS-1$
             if (HiveServerVersionInfo.HIVE_SERVER_2.getKey().equals(hiveServerVersion)) {
@@ -100,7 +101,7 @@ public class ConvertRepositoryNodeToProcessNode {
             }
             info.setDriverClassName(driverClass);
         } else {
-            info = new DbInfo(dbType, username, pwd, dbVersion, url, additionalParams);
+            info = new DbInfo(dbType, username, pwd, dbVersion, url, additionalParams, supportNLS);
         }
         try {
             convertToProcessNode(connectionItem, tableName);

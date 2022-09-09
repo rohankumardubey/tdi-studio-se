@@ -12,11 +12,11 @@ public class DbInfoTest {
     @Test
     public void testGenerateDriverName4MySQL() {
         DbInfo info = new DbInfo(EDatabaseTypeName.MYSQL.getDisplayName(), "root", "root", EDatabaseVersion4Drivers.MARIADB.getVersionValue(),
-                "jdbc:mariadb://localhost:3306/test?noDatetimeStringSync=true", "");
+                "jdbc:mariadb://localhost:3306/test?noDatetimeStringSync=true", "", false);
         assertEquals(info.getDriverClassName(), EDatabase4DriverClassName.MARIADB.getDriverClass());
 
         info = new DbInfo(EDatabaseTypeName.MYSQL.getDisplayName(), "root", "root", EDatabaseVersion4Drivers.MYSQL_5.getVersionValue(),
-                "jdbc:mysql://localhost:3306/test?noDatetimeStringSync=true", "");
+                "jdbc:mysql://localhost:3306/test?noDatetimeStringSync=true", "", false);
         assertEquals(info.getDriverClassName(), EDatabase4DriverClassName.MYSQL.getDriverClass());
     }
 
@@ -24,15 +24,15 @@ public class DbInfoTest {
     public void testGenerateDriverName() {
         DbInfo info = new DbInfo(EDatabaseTypeName.MSSQL.getDisplayName(), "username", "password",
                 EDatabaseVersion4Drivers.MSSQL_PROP.getVersionValue(), "jdbc:sqlserver://localhost:1433;DatabaseName=talend",
-                "");
+                "", false);
         assertEquals(info.getDriverClassName(), EDatabase4DriverClassName.MSSQL2.getDriverClass());
 
         info = new DbInfo(EDatabaseTypeName.MSSQL.getDisplayName(), "username", "password",
-                EDatabaseVersion4Drivers.MSSQL.getVersionValue(), "jdbc:jtds:sqlserver://localhost:1433/talend", "");
+                EDatabaseVersion4Drivers.MSSQL.getVersionValue(), "jdbc:jtds:sqlserver://localhost:1433/talend", "", false);
         assertEquals(info.getDriverClassName(), EDatabase4DriverClassName.MSSQL.getDriverClass());
 
         info = new DbInfo(EDatabaseTypeName.MSSQL.getDisplayName(), "username", "password", "",
-                "jdbc:jtds:sqlserver://localhost:1433/talend", "");
+                "jdbc:jtds:sqlserver://localhost:1433/talend", "", false);
         assertEquals(info.getDriverClassName(), EDatabase4DriverClassName.MSSQL.getDriverClass());
     }
 

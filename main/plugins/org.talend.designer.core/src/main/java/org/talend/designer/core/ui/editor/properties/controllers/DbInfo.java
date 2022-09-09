@@ -48,6 +48,8 @@ public class DbInfo {
     private String trueDBTypeForJDBC = null;
 
     private String additionalParams = null;
+    
+    private boolean supportNLS = false;
 
     private Connection conn = null;
 
@@ -59,13 +61,14 @@ public class DbInfo {
 
     private String thrifturi;
 
-    public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String additionalParams) {
+    public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String additionalParams, boolean supportNLS) {
         this.dbType = dbType;
         this.username = username;
         this.pwd = pwd;
         this.dbVersion = dbVersion;
         this.url = url;
         this.additionalParams = additionalParams;
+        this.supportNLS = supportNLS;
         generateDriverName();
         genarateDriverJarPath();
         getConnFromNode();
@@ -74,13 +77,14 @@ public class DbInfo {
 
     // for hive
     public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String jobTracker, String nameNode,
-            String thrifturi, String additionalParams) {
+            String thrifturi, String additionalParams, boolean supportNLS) {
         this.dbType = dbType;
         this.username = username;
         this.pwd = pwd;
         this.dbVersion = dbVersion;
         this.url = url;
         this.additionalParams = additionalParams;
+        this.supportNLS = supportNLS;
         this.jobTracker = jobTracker;
         this.nameNode = nameNode;
         this.thrifturi = thrifturi;
@@ -94,7 +98,7 @@ public class DbInfo {
     }
 
     public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String driverJarPath,
-            String additionalParams) {
+            String additionalParams, boolean supportNLS) {
         this.dbType = dbType;
         this.username = username;
         this.pwd = pwd;
@@ -102,6 +106,7 @@ public class DbInfo {
         this.url = url;
         this.driverJarPath = driverJarPath;
         this.additionalParams = additionalParams;
+        this.supportNLS = supportNLS;
         generateDriverName();
         getConnFromNode();
         genarateDriverJarPath();
@@ -115,7 +120,7 @@ public class DbInfo {
 
     // hywang add constructor for bug 9594
     public DbInfo(String dbType, String username, String pwd, String dbVersion, String url, String driverClassName,
-            String driverJarPath, String additionalParams) {
+            String driverJarPath, String additionalParams, boolean supportNLS) {
         this.dbType = dbType;
         this.username = username;
         this.pwd = pwd;
@@ -125,6 +130,7 @@ public class DbInfo {
         this.driverJarPath = driverJarPath;
         this.trueDBTypeForJDBC = dbType;
         this.additionalParams = additionalParams;
+        this.supportNLS = supportNLS;
         getConnFromNode();
     }
 
@@ -198,12 +204,12 @@ public class DbInfo {
             if (dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getProduct())
                     || dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getXmlName())) {
                 list = extractMeta.connect(trueDBTypeForJDBC, url, username, pwd, driverClassName, driverJarPath, dbVersion,
-                        additionalParams);
+                        additionalParams, supportNLS);
             } else {
                 // driverJarPath set to null,to reget driverJarPath
                 driverJarPath = "";
                 list = extractMeta.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion,
-                        additionalParams);
+                        additionalParams, supportNLS);
             }
             if (list != null && list.size() > 0) {
                 for (int i = 0; i < list.size(); i++) {

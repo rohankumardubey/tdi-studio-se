@@ -2337,7 +2337,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             list = ExtractMetaDataUtils.getInstance().connect(metadataConnection.getDbType(), metadataConnection.getUrl(),
                     metadataConnection.getUsername(), metadataConnection.getPassword(), metadataConnection.getDriverClass(),
                     metadataConnection.getDriverJarPath(), metadataConnection.getDbVersionString(),
-                    metadataConnection.getAdditionalParams());
+                    metadataConnection.getAdditionalParams(), metadataConnection.isSupportNLS());
             if (list != null && list.size() > 0) {
                 for (Object element : list) {
                     if (element instanceof Connection) {

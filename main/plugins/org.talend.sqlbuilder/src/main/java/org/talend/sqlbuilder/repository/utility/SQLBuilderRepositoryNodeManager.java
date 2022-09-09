@@ -877,7 +877,7 @@ public class SQLBuilderRepositoryNodeManager {
         List list = extractMeta.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                 iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
                 iMetadataConnection.getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
-                iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams());
+                iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams(), iMetadataConnection.isSupportNLS());
         String dbType = iMetadataConnection.getDbType();
         if (list != null && list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
