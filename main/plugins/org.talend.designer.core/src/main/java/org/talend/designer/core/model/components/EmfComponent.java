@@ -1910,9 +1910,11 @@ public class EmfComponent extends AbstractBasicComponent {
                 newParam.setListItemsShowIf(databricksRuntimeVersionDisplayConditions);
                 newParam.setListItemsNotShowIf(new String[DatabricksRuntimeVersion.getAvailableRuntimeAndSparkVersion().size()]);
                 newParam.setNumRow(xmlParam.getNUMROW() + 1);
-                newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
+                newParam.setFieldType(EParameterFieldType.OPENED_LIST);
+                newParam.setRepositoryValue(SparkBatchConstant.DATABRICKS_RUNTIME_VERSION);
                 newParam.setShow(true);
                 newParam.setGroup(xmlParam.getGROUP());
+                newParam.setDefaultValues(Arrays.asList(new ElementParameterDefaultValue("", "'true'=='true'")));
                 listParam.add(newParam);
             }
         }

@@ -15,6 +15,7 @@ package org.talend.designer.core.model.components;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -108,7 +109,9 @@ public final class Expression {
     }
 
     private static final String CONTAINS = "CONTAINS"; //$NON-NLS-1$
-
+    
+    private static final String IS_CONTEXT = "isContext["; //$NON-NLS-1$
+    
     private static final String IS_PLUGIN_LOADED = "IS_PLUGIN_LOADED"; //$NON-NLS-1$
 
     private Expression(String expressionString) {
@@ -315,6 +318,9 @@ public final class Expression {
         }
         if (simpleExpression.contains("SPARK_MODE") && simpleExpression.contains("LINK@")) { //$NON-NLS-1$
             return evaluateSparkMode(simpleExpression, listParam, currentParam);
+        }
+        if (simpleExpression.contains(IS_CONTEXT)) { //$NON-NLS-1$
+            return evaluateIsContext(simpleExpression, listParam, currentParam);
         }
 
         if (simpleExpression.contains(CONTAINS)) {
@@ -885,6 +891,16 @@ public final class Expression {
             }
         }
         return false;
+    }
+    
+    private static boolean evaluateIsContext(String simpleExpression, List<? extends IElementParameter> listParam,
+            ElementParameter currentParam) {
+    	String isContextParameter = simpleExpression.replaceAll("isContext\\[", "").replaceAll("\\]", "");
+    	return listParam.stream()
+    			.filter(x -> isContextParameter.equals(x.getName()))
+    			.findFirst()
+    			.map(value -> value.getValue().toString().startsWith("context"))
+    			.orElse(false);
     }
 
     /**

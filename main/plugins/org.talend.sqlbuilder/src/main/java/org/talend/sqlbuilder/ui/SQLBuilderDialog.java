@@ -487,7 +487,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             DriverShim wapperDriver = null;
             try {
                 List list = ExtractMetaDataUtils.getInstance().connect(dbType, url, username, pwd, driverClassName,
-                        iMetadataConnection.getDriverJarPath(), dbVersion, iMetadataConnection.getAdditionalParams());
+                        iMetadataConnection.getDriverJarPath(), dbVersion, iMetadataConnection.getAdditionalParams(), iMetadataConnection.isSupportNLS());
                 if (list != null && list.size() > 0) {
                     for (Object element : list) {
                         if (element instanceof Connection) {

@@ -849,7 +849,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                     filePath.toLowerCase(), datasource, dbRootPath, additionParam);
 
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(DBType, newURL, userName, password,
-                    schema, driveClass, driverJarPath, dbVersion, additionalParams);
+                    schema, driveClass, driverJarPath, dbVersion, additionalParams, metadataConnection.isSupportNLS());
             ConnectionParameters connParameters2 = new ConnectionParameters();
             if (connParameters == null) {
                 connParameters = connParameters2;
@@ -877,7 +877,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
                     metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath(),
-                    metadataConnection.getDbVersionString(), metadataConnection.getAdditionalParams());
+                    metadataConnection.getDbVersionString(), metadataConnection.getAdditionalParams(), metadataConnection.isSupportNLS());
             connParameters.setConnectionComment(testConnection.getMessageException());
 
             if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType())) {
