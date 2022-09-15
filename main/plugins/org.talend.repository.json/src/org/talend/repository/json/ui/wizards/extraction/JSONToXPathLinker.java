@@ -76,6 +76,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.metadata.xml.XmlExtractorBgRefresher;
 import org.talend.repository.json.ui.wizards.dnd.JSONToSchemaDragAndDropHandler;
+import org.talend.repository.json.util.JSONUtil;
 import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 import org.talend.repository.model.json.SchemaTarget;
 import org.talend.repository.ui.wizards.metadata.connection.files.json.AbstractTreePopulator;
@@ -336,7 +337,12 @@ public class JSONToXPathLinker extends TreeToTablesLinker<Object, Object> {
             TableItem tableItem = fieldsTableItems[i];
             SchemaTarget schemaTarget = schemaTargetList.get(indexShemaTarget);
             String relativeXpathQuery = schemaTarget.getRelativeXPathQuery();
-            if(fieldToExtract(jsonDndHandler.extractTagName(relativeXpathQuery, jsonDndHandler.getReadbyMode()), treePopulator.getAllNodes())) {
+            String tagName = jsonDndHandler.extractTagName(relativeXpathQuery, jsonDndHandler.getReadbyMode());
+            String resolvedTagName = JSONUtil.detachFieldNameWrap(tagName);
+            if (fieldToExtract(resolvedTagName, treePopulator.getAllNodes())) {
+                if (EJsonReadbyMode.JSONPATH.getValue().equals(jsonDndHandler.getReadbyMode())) {
+                    relativeXpathQuery = JSONUtil.detachJsonPathExpression(relativeXpathQuery);
+                }
             	createFieldLinks(relativeXpathQuery, tableItem, monitorWrap, schemaTarget);
             }
             monitorWrap.worked(1);

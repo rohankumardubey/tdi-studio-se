@@ -27,6 +27,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.IConnection;
@@ -116,11 +117,12 @@ public class TaCoKitGuessSchemaProcess {
             
             
             final Future<String> result = executorService.submit(() -> {
-                try (
-                        final BufferedReader reader = new BufferedReader(
-                                new InputStreamReader(executeProcess.getInputStream()))) {
+                final Pattern pattern = Pattern.compile("^\\[\\s*(INFO|WARN|ERROR|DEBUG|TRACE)\\s*]");
+                try (final BufferedReader reader =
+                             new BufferedReader(new InputStreamReader(executeProcess.getInputStream()))) {
                     return reader.lines()
-                            .filter(l -> l.startsWith("[") || l.startsWith("{")) // ignore line with non json data
+                            .filter(l -> !pattern.matcher(l).find())                // filter out logs
+                            .filter(l -> l.startsWith("[") || l.startsWith("{"))    // ignore line with non json data
                             .collect(joining("\n"));
                 }
             });

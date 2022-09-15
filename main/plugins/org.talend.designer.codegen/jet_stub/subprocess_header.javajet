@@ -32,6 +32,8 @@
 	boolean stat = codeGenArgument.isStatistics();
 	boolean containsTPartitioner = subTree.getRootNode().getProcess().getNodesOfType("tPartitioner").size() > 0 ? true : false;
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(subTree.getRootNode().getProcess(), "__LOG4J_ACTIVATE__"));
+    boolean isLog4j2Enabled = ("true").equals(ElementParameterParser.getValue(subTree.getRootNode().getProcess(), "__LOG4J2_ACTIVATE__"));//log4j2 enable
+    String MDC_CLASS = "org.slf4j.MDC";
 %>
 
 <%
@@ -1603,6 +1605,11 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 	globalMap.put("<%=subTree.getName() %>_SUBPROCESS_STATE", 0);
 
  final boolean execStat = this.execStat;
+	<%if(isLog4j2Enabled) {%>
+		<%=MDC_CLASS%>.put("_subJobName", "<%=subTree.getName() %>");
+		<%=MDC_CLASS%>.put("_subJobPid", TalendString.getAsciiRandomString(6));
+	<%}%>
+
 <%
 	boolean isParallelize = false;
 	for (INode node : subTree.getNodes()) {

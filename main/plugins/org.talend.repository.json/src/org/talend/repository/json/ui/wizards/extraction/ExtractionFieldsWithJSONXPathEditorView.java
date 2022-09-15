@@ -20,6 +20,9 @@ import java.util.Set;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
@@ -39,6 +42,7 @@ import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditor
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.UniqueStringGenerator;
+import org.talend.repository.json.i18n.Messages;
 import org.talend.repository.model.json.SchemaTarget;
 
 /**
@@ -57,6 +61,8 @@ public class ExtractionFieldsWithJSONXPathEditorView extends AbstractDataTableEd
     private TableViewerCreatorColumn xPathColumn;
 
     private JSONToXPathLinker linker;
+
+    private Button autoWrapButton;
 
     public ExtractionFieldsWithJSONXPathEditorView(JSONExtractorFieldModel model, Composite parent, int styleChild) {
         this(model, parent, styleChild, false);
@@ -375,7 +381,14 @@ public class ExtractionFieldsWithJSONXPathEditorView extends AbstractDataTableEd
      */
     @Override
     protected ExtendedToolbarView initToolBar() {
-        return new ExtendedToolbarView(getMainComposite(), SWT.NONE, getExtendedTableViewer()) {
+        Composite parent = new Composite(getMainComposite(), SWT.None);
+        parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        GridLayout gridLayout = new GridLayout(2, true);
+        gridLayout.marginHeight = 0;
+        gridLayout.marginWidth = 0;
+        parent.setLayout(gridLayout);
+
+        ExtendedToolbarView toolBarView = new ExtendedToolbarView(parent, SWT.NONE, getExtendedTableViewer()) {
 
             @Override
             protected AddPushButtonForExtendedTable createAddPushButton() {
@@ -437,7 +450,18 @@ public class ExtractionFieldsWithJSONXPathEditorView extends AbstractDataTableEd
             }
 
         };
+        toolBarView.getToolbar().setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
 
+        autoWrapButton = new Button(parent, SWT.PUSH);
+        autoWrapButton.setText(Messages.ExtractionFieldsWithJSONXPathEditorView_wrap_button);
+        autoWrapButton.setToolTipText(Messages.ExtractionFieldsWithJSONXPathEditorView_wrap_button_toolTip);
+        autoWrapButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false));
+        return toolBarView;
+
+    }
+
+    public Button getAutoWrapButton() {
+        return autoWrapButton;
     }
 
 }

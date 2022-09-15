@@ -21,8 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -229,4 +232,88 @@ public class JSONUtil {
             tempjsonWizardDir.delete();
         }
     }
+
+    /**
+     * <p>
+     * Remove [?(Expression)] from json path
+     * </p>
+     * e.g. $.person[?(@.attribute==1)].birthday => $.person.birthday
+     * @param jsonPath
+     * @return
+     */
+    public static String detachJsonPathExpression(String jsonPath) {
+        if (StringUtils.isNotBlank(jsonPath)) {
+            jsonPath = jsonPath.replaceAll("(\\[\\?\\()(.*?)(\\)\\])", "");
+        }
+        StringBuffer expBuffer = new StringBuffer();
+        String[] fields = jsonPath.split("\\.");
+        for (int i = 0; i < fields.length; i++) {
+            String field = fields[i];
+            expBuffer.append(detachFieldNameWrap(field));
+            if (i != fields.length - 1) {
+                expBuffer.append(".");
+            }
+        }
+        return expBuffer.toString();
+    }
+
+    public static String detachFieldNameWrap(String fieldName) {
+        if (StringUtils.isNotBlank(fieldName) && fieldName.startsWith("['") && fieldName.endsWith("']")) {
+            fieldName = fieldName.substring(2, fieldName.lastIndexOf("']"));
+        }
+        return fieldName;
+    }
+
+    public static boolean isFieldNameWrapped(char[] charArray, int fieldStartIndex, int fieldEndIndex) {
+        if (fieldStartIndex == 0) {
+            return false;
+        }
+
+        int checkIndex = fieldStartIndex - 1;
+        List<String> strList = new ArrayList<String>();
+        while (checkIndex >= 0) {
+            if (!Character.isWhitespace(charArray[checkIndex])) {
+                strList.add(String.valueOf(charArray[checkIndex]));
+            }
+            if (strList.size() == 2) {
+                break;
+            }
+            checkIndex--;
+        }
+        if (strList.size() < 2 || !"['".equals(strList.get(1) + strList.get(0))) {
+            return false;
+        }
+
+        strList.clear();
+        checkIndex = fieldEndIndex + 1;
+        while (checkIndex < charArray.length) {
+            if (!Character.isWhitespace(charArray[checkIndex])) {
+                strList.add(String.valueOf(charArray[checkIndex]));
+            }
+            if (strList.size() == 2) {
+                break;
+            }
+            checkIndex++;
+        }
+        if (strList.size() == 2 && "']".equals(strList.get(0) + strList.get(1))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static List<Integer> getAllIndexOfString(String sourceStr, String indexStr) {
+        List<Integer> indexList = new ArrayList<Integer>();
+        int fromIndex = 0;
+        while (fromIndex < sourceStr.length()) {
+            int index = sourceStr.indexOf(indexStr, fromIndex);
+            if (index == -1) {
+                break;
+            }
+            indexList.add(index);
+            fromIndex = index + indexStr.length();
+        }
+        return indexList;
+    }
+
 }

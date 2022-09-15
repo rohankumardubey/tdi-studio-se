@@ -2194,22 +2194,16 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                 }
                                             } else if ("ENTRY_PROPERTIES".equals(param.getName()) && oldList != null //$NON-NLS-1$
                                                     && objectValue instanceof List) {
-                                                List objectList = (List) objectValue;
-                                                if (oldList.size() != objectList.size()) {
-                                                    sameValues = false;
-                                                } else {
-                                                    for (int i = 0; i < oldList.size(); i++) {
-                                                        Map<String, Object> oldMap = oldList.get(i);
-                                                        Map<String, Object> objectMap = (Map<String, Object>) objectList.get(i);
-                                                        if (oldMap.get("KEY").equals(objectMap.get("KEY")) //$NON-NLS-1$
-                                                                && oldMap.get("VALUE").equals(objectMap.get("VALUE"))) { //$NON-NLS-1$
-                                                            sameValues = true;
-                                                        } else {
-                                                            sameValues = false;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
+                                                sameValues = compareMapList(objectValue, oldList,
+                                                        new String[] { "KEY", "VALUE" });
+                                            } else if ("MAPPING_JSONPATH".equals(param.getName()) && oldList != null
+                                                    && objectValue instanceof List) {
+                                                sameValues = compareMapList(objectValue, oldList,
+                                                        new String[] { "SCHEMA_COLUMN", "QUERY" });
+                                            } else if ("MAPPINGXPATH".equals(param.getName()) && oldList != null
+                                                    && objectValue instanceof List) {
+                                                sameValues = compareMapList(objectValue, oldList,
+                                                        new String[] { "SCHEMA_COLUMN", "QUERY", "NODECHECK" });
                                             }
                                         } else
                                         // check the value
@@ -2458,6 +2452,27 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
 
         return propertiesResults;
+    }
+
+    public boolean compareMapList(Object objectValue, List<Map<String, Object>> oldList, String[] keys) {
+        List objectList = (List) objectValue;
+        if (oldList.size() != objectList.size()) {
+            return false;
+        } else {
+            for (int i = 0; i < oldList.size(); i++) {
+                boolean sameValues = true;
+                Map<String, Object> oldMap = oldList.get(i);
+                Map<String, Object> objectMap = (Map<String, Object>) objectList.get(i);
+                for (int j = 0; j < keys.length; j++) {
+                    String key = keys[j];
+                    sameValues &= oldMap.get(key).equals(objectMap.get(key));
+                    if (sameValues == false) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private String getReposiotryValueForOldJDBC(Node node, Connection repositoryConnection, IElementParameter param) {
