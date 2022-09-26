@@ -10,7 +10,7 @@ public enum EParamKind {
     HEADER("header"),
     MATRIX("matrix"),
     MULTIPART("multipart"),
-    BODY("body")
+    EMPTY("")
     
     ;
 
